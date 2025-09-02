@@ -20,7 +20,19 @@ class VectorExtractor:
         self.batch_size = batch_size
         self.logger = logging.getLogger(__name__)
 
-# ------------------------------------------------------------------
+    @staticmethod
+    def _pool_activations(act: torch.Tensor) -> torch.Tensor:
+        """Pool activations to shape (batch, hidden).
+
+        If activations have more than 2 dims (e.g., (batch, seq, hidden)),
+        average across all non-batch, non-hidden dimensions.
+        """
+        if act.ndim > 2:
+            reduce_dims = tuple(range(1, act.ndim - 1))
+            act = act.mean(dim=reduce_dims)
+        return act
+
+    # ------------------------------------------------------------------
     # General toxicity vector
     # ------------------------------------------------------------------
     def compute_gtv(self, data: Sequence[Dict[str, str]]) -> torch.Tensor:
@@ -42,13 +54,10 @@ class VectorExtractor:
             toxic_act = self.wrapper.get_activations(t_batch, None, [self.layer])[self.layer]
             neutral_act = self.wrapper.get_activations(n_batch, None, [self.layer])[self.layer]
 
+            toxic_act = self._pool_activations(toxic_act)  # (batch, hidden)
+            neutral_act = self._pool_activations(neutral_act)  # (batch, hidden)
 
-            # 각 텐서의 시퀀스 길이 차원(dim=1)에 대해 평균을 계산합니다.
-            toxic_act_mean = toxic_act.mean(dim=1)
-            neutral_act_mean = neutral_act.mean(dim=1)
-
-            # 평균을 낸 벡터들로 차이를 계산합니다.
-            diffs.append(toxic_act_mean - neutral_act_mean)
+            diffs.append(toxic_act - neutral_act)
 
             self.logger.debug("Processed GTV batch %d-%d", i, i + len(t_batch))
 
@@ -79,14 +88,13 @@ class VectorExtractor:
             image_act = self.wrapper.get_activations(["" for _ in images], images, [self.layer])[self.layer]
             fused_act = self.wrapper.get_activations(texts, images, [self.layer])[self.layer]
 
-            # 각 텐서의 시퀀스 길이 차원(dim=1)에 대해 평균을 계산합니다.
-            text_act_mean = text_act.mean(dim=1)
-            image_act_mean = image_act.mean(dim=1)
-            fused_act_mean = fused_act.mean(dim=1)
+            # Pool to (batch, hidden)
+            text_act = self._pool_activations(text_act)
+            image_act = self._pool_activations(image_act)
+            fused_act = self._pool_activations(fused_act)
 
-            # 평균을 낸 벡터들로 연산을 수행합니다.
-            residuals.append(fused_act_mean - (text_act_mean + image_act_mean))
-            
+            residuals.append(fused_act - (text_act + image_act))
+
             self.logger.debug("Processed ITV batch %d-%d", i, i + len(batch))
 
             # Free image resources to avoid file handles accumulation
