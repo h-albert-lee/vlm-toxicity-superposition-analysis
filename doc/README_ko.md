@@ -56,16 +56,27 @@ tests/                    # pytest 단위 테스트
 
 ## 5. 실행 스크립트 흐름
 
-1. **`00_define_general_toxicity_vector.py`**
+1. **`define_general_toxicity_vector.py`** (모듈: `scripts.define_general_toxicity_vector`)
    - `data_sources.toxic_neutral_pairs` 에서 텍스트 페어를 읽어 일반 독성 벡터(GTV)를 계산합니다.
-2. **`01_define_intrinsic_toxicity_vector.py`**
+2. **`define_intrinsic_toxicity_vector.py`** (모듈: `scripts.define_intrinsic_toxicity_vector`)
    - 멀티모달 사례를 바탕으로 내재 독성 벡터(ITV)를 산출합니다.
-3. **`03_analyze_vector_similarity.py`**
+3. **`analyze_vector_similarity.py`** (모듈: `scripts.analyze_vector_similarity`)
    - GTV와 ITV의 코사인 유사도를 계산하여 두 벡터의 관계를 분석합니다.
-4. **`04_evaluate_precision_intervention.py`**
+4. **`evaluate_precision_intervention.py`** (모듈: `scripts.evaluate_precision_intervention`)
    - 독성 분류기를 이용해 개입 전후의 텍스트 독성 점수를 비교합니다.
-5. **`05_run_multi_layer_experiments.py`**
+5. **`run_multi_layer_experiments.py`** (모듈: `scripts.run_multi_layer_experiments`)
    - 여러 레이어를 순회하며 유사도를 기록하고 가장 높은 레이어에 대해 정밀 개입 평가를 수행합니다.
+
+실행 예시는 다음과 같습니다:
+
+```bash
+python -m scripts.define_general_toxicity_vector --config configs/base_config.yaml
+python -m scripts.define_intrinsic_toxicity_vector --config configs/base_config.yaml
+python -m scripts.analyze_vector_similarity --config configs/base_config.yaml
+python -m scripts.evaluate_precision_intervention --config configs/base_config.yaml
+python -m scripts.run_multi_layer_experiments --config configs/base_config.yaml
+```
+
 
 ## 6. 배치 처리와 성능
 

@@ -20,10 +20,11 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def run_script(script: str, config_path: Path) -> None:
+def run_script(module: str, config_path: Path) -> None:
     subprocess.run([
         "python",
-        script,
+        "-m",
+        module,
         "--config",
         str(config_path),
     ], check=True)
@@ -55,8 +56,8 @@ def main() -> None:
         with open(temp_cfg_path, "w", encoding="utf-8") as f:
             yaml.safe_dump(layer_cfg, f)
 
-        run_script("scripts/00_define_general_toxicity_vector.py", temp_cfg_path)
-        run_script("scripts/01_define_intrinsic_toxicity_vector.py", temp_cfg_path)
+        run_script("scripts.define_general_toxicity_vector", temp_cfg_path)
+        run_script("scripts.define_intrinsic_toxicity_vector", temp_cfg_path)
 
         gtv = torch.load(layer_dir / "general_toxicity_vector.pt")
         itv = torch.load(layer_dir / "intrinsic_toxicity_vector.pt")
@@ -87,7 +88,7 @@ def main() -> None:
         yaml.safe_dump(best_cfg, f)
 
     logger.info("정밀 개입 평가를 시작합니다...")
-    run_script("scripts/04_evaluate_precision_intervention.py", best_cfg_path)
+    run_script("scripts.evaluate_precision_intervention", best_cfg_path)
 
 
 if __name__ == "__main__":
