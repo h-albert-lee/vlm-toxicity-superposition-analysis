@@ -21,25 +21,25 @@ echo "-----------------------------------------------------"
 
 # 1. 일반 독성 벡터 (GTV) 정의
 echo "[1/4] 일반 독성 벡터 (GTV) 정의를 시작합니다..."
-python -m scripts.00_define_general_toxicity_vector --config $CONFIG_PATH
+python -m scripts.define_general_toxicity_vector --config $CONFIG_PATH
 echo "✅ GTV 정의 완료."
 echo "-----------------------------------------------------"
 
 # 2. 내재된 독성 벡터 (ITV) 정의
 echo "[2/4] 내재된 독성 벡터 (ITV) 정의를 시작합니다..."
-python -m scripts.01_define_intrinsic_toxicity_vector --config $CONFIG_PATH
+python -m scripts.define_intrinsic_toxicity_vector --config $CONFIG_PATH
 echo "✅ ITV 정의 완료."
 echo "-----------------------------------------------------"
 
 # 3. 벡터 유사도 분석
 echo "[3/4] GTV와 ITV 간의 유사도 분석을 시작합니다..."
-python -m scripts.03_analyze_vector_similarity --config $CONFIG_PATH
+python -m scripts.analyze_vector_similarity --config $CONFIG_PATH
 echo "✅ 벡터 유사도 분석 완료."
 echo "-----------------------------------------------------"
 
 # 4. 정밀 개입(Intervention) 평가
 echo "[4/4] 정밀 개입 평가를 시작합니다..."
-python -m scripts.04_evaluate_precision_intervention --config $CONFIG_PATH
+python -m scripts.evaluate_precision_intervention --config $CONFIG_PATH
 echo "✅ 정밀 개입 평가 완료."
 echo "-----------------------------------------------------"
 

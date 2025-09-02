@@ -35,7 +35,7 @@ loader = registry.get_loader("hate_speech")
 data = loader.load(max_samples=1000)
 
 # Or use command line
-# python scripts/prepare_datasets.py --loader hate_speech --max-samples 1000
+# python -m scripts.prepare_datasets --loader hate_speech --max-samples 1000
 ```
 
 **Benefits of new system:**
@@ -80,7 +80,7 @@ loaders:
 ```
 
 ```bash
-python scripts/prepare_datasets.py --config configs/my_data_config.yaml
+python -m scripts.prepare_datasets --config configs/my_data_config.yaml
 ```
 
 ## Adding Custom Loaders
@@ -102,7 +102,7 @@ class MyCustomLoader(BaseDataLoader):
 registry.register("my_loader", MyCustomLoader)
 
 # Use it
-python scripts/prepare_datasets.py --loader my_loader
+python -m scripts.prepare_datasets --loader my_loader
 ```
 
 ## Backward Compatibility

@@ -31,13 +31,13 @@ The toolkit is pre-configured with standardized benchmark datasets optimized for
 **Quick Start - Prepare Benchmark Datasets:**
 ```bash
 # Prepare both text and VLM benchmarks (200 samples each)
-python scripts/prepare_benchmark_datasets.py --strategy benchmark_only
+python -m scripts.prepare_benchmark_datasets --strategy benchmark_only
 
 # Text-only benchmark
-python scripts/prepare_benchmark_datasets.py --strategy text_only --max-samples 100
+python -m scripts.prepare_benchmark_datasets --strategy text_only --max-samples 100
 
 # Custom sample size
-python scripts/prepare_benchmark_datasets.py --max-samples 50
+python -m scripts.prepare_benchmark_datasets --max-samples 50
 ```
 
 #### Flexible Data Loading System
@@ -46,67 +46,67 @@ The toolkit also includes a flexible, plugin-based data loading system for custo
 
 1. **List available loaders**
    ```bash
-   python scripts/prepare_datasets.py --list-loaders
+   python -m scripts.prepare_datasets --list-loaders
    ```
 
 2. **Get information about benchmark loaders**
    ```bash
-   python scripts/prepare_datasets.py --loader-info MultilingualToxicityLoader
-   python scripts/prepare_datasets.py --loader-info MemeSafetyBenchLoader
+   python -m scripts.prepare_datasets --loader-info MultilingualToxicityLoader
+   python -m scripts.prepare_datasets --loader-info MemeSafetyBenchLoader
    ```
 
 3. **Load from specific sources**
    ```bash
    # Benchmark loaders (toxic/unsafe samples only)
-   python scripts/prepare_datasets.py --loader MultilingualToxicityLoader --max-samples 200
-   python scripts/prepare_datasets.py --loader MemeSafetyBenchLoader --max-samples 200
+   python -m scripts.prepare_datasets --loader MultilingualToxicityLoader --max-samples 200
+   python -m scripts.prepare_datasets --loader MemeSafetyBenchLoader --max-samples 200
    
    # Legacy loaders (mixed toxic/non-toxic)
-   python scripts/prepare_datasets.py --loader hate_speech --max-samples 1000
-   python scripts/prepare_datasets.py --loader real_toxicity --toxicity-threshold 0.7
+   python -m scripts.prepare_datasets --loader hate_speech --max-samples 1000
+   python -m scripts.prepare_datasets --loader real_toxicity --toxicity-threshold 0.7
    
    # Custom CSV files
-   python scripts/prepare_datasets.py --loader csv --file-path your_data.csv --max-samples 500
+   python -m scripts.prepare_datasets --loader csv --file-path your_data.csv --max-samples 500
    
    # JSONL files
-   python scripts/prepare_datasets.py --loader jsonl --file-path your_data.jsonl
+   python -m scripts.prepare_datasets --loader jsonl --file-path your_data.jsonl
    
    # Local directory (auto-detect formats)
-   python scripts/prepare_datasets.py --loader local --file-path data/directory --pattern "*.csv"
+   python -m scripts.prepare_datasets --loader local --file-path data/directory --pattern "*.csv"
    ```
 
 4. **Combine multiple datasets using configuration**
    ```bash
-   python scripts/prepare_datasets.py --config configs/flexible_data_config.yaml --strategy balanced
+   python -m scripts.prepare_datasets --config configs/flexible_data_config.yaml --strategy balanced
    ```
 
 5. **Analyze dataset quality**
    ```bash
-   python scripts/analyze_data.py --data_path data/prepared_dataset.jsonl --output_dir analysis
+   python -m scripts.analyze_data --data_path data/prepared_dataset.jsonl --output_dir analysis
    ```
 
 ### Vector Computation
 
 3. **Compute the general toxicity vector (GTV)**
    ```bash
-   python scripts/00_define_general_toxicity_vector.py --config configs/base_config.yaml
+   python -m scripts.define_general_toxicity_vector --config configs/base_config.yaml
    ```
 4. **Compute the intrinsic toxicity vector (ITV)**
    ```bash
-   python scripts/01_define_intrinsic_toxicity_vector.py --config configs/base_config.yaml
+   python -m scripts.define_intrinsic_toxicity_vector --config configs/base_config.yaml
    ```
 5. **Analyze vector similarity**
    ```bash
-   python scripts/03_analyze_vector_similarity.py --config configs/base_config.yaml
+   python -m scripts.analyze_vector_similarity --config configs/base_config.yaml
    ```
 6. **Evaluate precision interventions**
    ```bash
-   python scripts/04_evaluate_precision_intervention.py --config configs/base_config.yaml
+   python -m scripts.evaluate_precision_intervention --config configs/base_config.yaml
    ```
 
 To scan multiple layers and automatically run precision evaluation on the best one, use:
    ```bash
-   python scripts/05_run_multi_layer_experiments.py --config configs/base_config.yaml
+   python -m scripts.run_multi_layer_experiments --config configs/base_config.yaml
    ```
 
 Each script reads model and data settings from the configuration file and writes outputs to the directory specified by `output_dir`.
